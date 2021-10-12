@@ -19,6 +19,14 @@ public class RoomListGridPane extends GridPane {
     private TableView<Show> roomOneTableView;
     private TableView<Show> roomTwoTableView;
 
+    public TableView<Show> getRoomOneTableView() {
+        return roomOneTableView;
+    }
+
+    public TableView<Show> getRoomTwoTableView() {
+        return roomTwoTableView;
+    }
+
     public RoomListGridPane(Database db) {
         this.db = db;
         roomOneTableView = new TableView<>();
