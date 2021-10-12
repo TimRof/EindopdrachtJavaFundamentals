@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 
 import nl.inholland.data.Database;
 import nl.inholland.model.User;
+import nl.inholland.ui.StyledScene;
 import nl.inholland.ui.panes.PurchaseBorderPane;
 import nl.inholland.ui.panes.TopMenuHBox;
 
@@ -31,7 +32,7 @@ public class MainWindow {
         borderPane.setTop(TopMenuHBox);
         borderPane.setCenter(purchaseTickets);
 
-        Scene dashboardScene = new Scene(borderPane);
+        StyledScene dashboardScene = new StyledScene(borderPane);
 
         stage.setScene(dashboardScene);
     }

@@ -1,0 +1,40 @@
+.root {
+-fx-font-family: Roboto;
+}
+.purchasePane
+{
+    -fx-background-color: #00325a;
+}
+.purchasePane .label{
+    -fx-text-fill: WHITE;
+}
+.background
+{
+    -fx-background-color: #00325a;
+}
+.background .label
+{
+    -fx-text-fill: white;
+}
+.badLabel .label
+{
+    -fx-text-fill: red;
+}
+.background .button{
+    -fx-background-color: #123d69;
+    -fx-border-color: white;
+    -fx-border-style: dotted;
+    -fx-background-radius: 5px;
+    -fx-text-fill: white;
+}
+.background .text-field{
+    -fx-background-color: #111111;
+    -fx-text-fill: white;
+    -fx-border-color: #666666;
+}
+.header
+{
+    -fx-font-size: 24;
+    -fx-text-fill: #00325a;
+}
+

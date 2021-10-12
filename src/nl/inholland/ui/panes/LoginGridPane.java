@@ -24,17 +24,18 @@ public class LoginGridPane extends GridPane {
         Label welcomeLabel = new Label("Welcome!\nPlease sign in to continue.");
         Label badLogin = new Label("Bad credentials!");
 
-        Label userLabel = new Label("Username: ");
-        Label passLabel = new Label("Password: ");
+        Label userLabel = new Label("Username");
+        Label passLabel = new Label("Password");
         TextField userInput = new TextField();
         PasswordField passInput = new PasswordField();
         Button loginButton = new Button("Log in");
         loginButton.setPrefSize(100,20);
-        badLogin.setTextFill(Color.color(1,0,0));
+        getStyleClass().add("background");
+        badLogin.setStyle("-fx-text-fill: red");
 
         // place nodes on gridpane
         GridPane.setConstraints(welcomeLabel, 0, 0);
-        GridPane.setConstraints(badLogin, 0, 1);
+        GridPane.setConstraints(badLogin, 0, 5);
         GridPane.setConstraints(userLabel, 0, 2);
         GridPane.setConstraints(passLabel, 0, 3);
         GridPane.setConstraints(userInput, 1, 2);
@@ -44,7 +45,7 @@ public class LoginGridPane extends GridPane {
         // hide badLogin label
         badLogin.setVisible(false);
 
-        this.getChildren().addAll(userLabel, passLabel, userInput, passInput, loginButton, badLogin, welcomeLabel);
+        this.getChildren().addAll(userLabel, passLabel, userInput, passInput, loginButton, badLogin);
 
         // login functionality
         loginButton.setOnAction(actionEvent -> {
@@ -59,6 +60,7 @@ public class LoginGridPane extends GridPane {
             if (keyEvent.getCode().equals(KeyCode.ENTER))
                 checkLogin(db, userInput, passInput, badLogin, stage);
         });
+
     }
     private void checkLogin(Database db, TextField userInput, TextField passInput, Label badLogin, Stage stage){
         for (User user:db.getUsers()) {
@@ -72,7 +74,7 @@ public class LoginGridPane extends GridPane {
                 badLogin.setVisible(false);
                 MainWindow mw = new MainWindow(db, user, stage);
                 mw.getStage().show();
-                passInput.clear();
+                passInput .clear();
                 passInput.requestFocus();
                 stage.hide();
                 return;

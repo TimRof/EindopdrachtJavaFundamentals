@@ -49,7 +49,7 @@ public class RoomListGridPane extends GridPane {
         add(roomTwoLabel, 1,0,1,1);
         add(roomTwoVBox, 1,1,1,1);
 
-        setStyle("-fx-border-color: ROYALBLUE");
+        setStyle("-fx-border-color: #00325a");
         setPadding(new Insets(0,0,0,0));
 
         setMargin(roomOneVBox, new Insets(0,0,0,5));

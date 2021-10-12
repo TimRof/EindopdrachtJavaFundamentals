@@ -21,8 +21,8 @@ public class PurchaseBorderPane extends BorderPane{
 
         Label purchaseLabel = new Label("Purchase Tickets");
         purchaseLabel.setPadding(new Insets(0, 0, 5, 0));
-        purchaseLabel.setTextFill(Color.ROYALBLUE);
-        purchaseLabel.setStyle("-fx-font: 24 arial");
+
+        purchaseLabel.getStyleClass().add("header");
 
         Label roomLabel = new Label("Room");
         roomLabel.setPadding(new Insets(10,50,10,0));
@@ -67,6 +67,7 @@ public class PurchaseBorderPane extends BorderPane{
         gridPanePurchase.add(movieTitleLabel, 3,0,1,1);
         gridPanePurchase.add(seatsComboBox, 3,1,1,1);
         gridPanePurchase.add(nameTextField, 3,2,1,1);
+        gridPanePurchase.getStyleClass().add("purchasePane");
 
         this.setTop(purchaseLabel);
         this.setCenter(new RoomListGridPane(db));

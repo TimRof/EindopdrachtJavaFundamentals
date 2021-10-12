@@ -3,6 +3,7 @@ package nl.inholland.ui.windows;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import nl.inholland.data.Database;
+import nl.inholland.ui.StyledScene;
 import nl.inholland.ui.panes.LoginGridPane;
 
 public class LoginWindow {
@@ -16,7 +17,7 @@ public class LoginWindow {
         stage = new Stage();
         stage.setTitle("Login");
 
-        Scene loginScene = new Scene(new LoginGridPane(db, stage));
+        StyledScene loginScene = new StyledScene(new LoginGridPane(db, stage));
 
         stage.setScene(loginScene);
     }
