@@ -13,8 +13,8 @@ import nl.inholland.model.AccessLevel;
 import nl.inholland.model.User;
 import nl.inholland.ui.dialogs.LogoutDialog;
 
-public class TopMenuItems extends HBox{
-    public TopMenuItems(User loggedInUser, Stage oldStage, Stage stage) {
+public class TopMenuHBox extends HBox{
+    public TopMenuHBox(User loggedInUser, Stage oldStage, Stage stage) {
 
         this.setPadding(new Insets(13,13,13,13));
         this.setSpacing(10);

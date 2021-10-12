@@ -15,8 +15,8 @@ import nl.inholland.data.Database;
 import nl.inholland.model.User;
 import nl.inholland.ui.windows.MainWindow;
 
-public class LoginMenu extends GridPane {
-    public LoginMenu(Database db, Stage stage) {
+public class LoginGridPane extends GridPane {
+    public LoginGridPane(Database db, Stage stage) {
         this.setPadding(new Insets(10,10,10,10));
         this.setVgap(5);
 

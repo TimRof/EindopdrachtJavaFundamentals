@@ -1,26 +1,13 @@
 package nl.inholland.ui.windows;
 
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
 
 import nl.inholland.data.Database;
-import nl.inholland.model.Movie;
 import nl.inholland.model.User;
-import nl.inholland.ui.panes.RoomListViews;
-import nl.inholland.ui.panes.TopMenuItems;
-
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import nl.inholland.ui.panes.PurchaseBorderPane;
+import nl.inholland.ui.panes.TopMenuHBox;
 
 public class MainWindow {
     private Database db;
@@ -36,12 +23,12 @@ public class MainWindow {
         stage.setTitle("Cinema Dashboard -- Welcome " + loggedInUser.getFirstName() + " " + loggedInUser.getLastName() + "! [" + loggedInUser.getAccessLevel() + "]");
 
         // make top menu + items
-        TopMenuItems TopMenuItems = new TopMenuItems(loggedInUser, oldStage, stage);
+        TopMenuHBox TopMenuHBox = new TopMenuHBox(loggedInUser, oldStage, stage);
         // make listviews for rooms
-        RoomListViews purchaseTickets = new RoomListViews(db);
+        PurchaseBorderPane purchaseTickets = new PurchaseBorderPane(db);
 
         BorderPane borderPane = new BorderPane();
-        borderPane.setTop(TopMenuItems);
+        borderPane.setTop(TopMenuHBox);
         borderPane.setCenter(purchaseTickets);
 
         Scene dashboardScene = new Scene(borderPane);
