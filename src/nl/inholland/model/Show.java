@@ -1,6 +1,5 @@
 package nl.inholland.model;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,39 +9,45 @@ public class Show {
     private int roomNumber;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private List<Ticket> tickets = new ArrayList<>();
-    public Show(Movie movie, int roomNumber, LocalDateTime startTime){
+    private List<Ticket> openTickets = new ArrayList<>();
+    private List<Ticket> soldTickets = new ArrayList<>();
+    public Show(Movie movie, LocalDateTime startTime){
         this.movie = movie;
-        this.roomNumber = roomNumber;
         this.startTime = startTime;
         this.endTime = startTime.plus(movie.getMovieDuration());
-        makeTickets();
     }
-    private void makeTickets(){
-        for (int i = 0; i < 200; i++) {
-            tickets.add(new Ticket());
-        }
+    public void addRoomNumber(int roomNumber){
+        this.roomNumber = roomNumber;
     }
-    public int getAvailableSeats(){
-        int available = 0;
-        for (Ticket ticket:tickets) {
-            if (ticket.getTicketStatus().equals(TicketStatus.Available))
-                available++;
-        }
-        return available;
-    }
-
-    public Movie getMovie() { return movie; }
-
-    public void setMovie(Movie movie) { this.movie = movie; }
 
     public int getRoomNumber() {
         return roomNumber;
     }
 
-    public void setRoomNumber(int roomNumber) {
-        this.roomNumber = roomNumber;
+    public void makeTickets(int amount){
+        for (int i = 0; i < amount; i++) {
+            openTickets.add(new Ticket());
+        }
     }
+    public Show buyTickets(int amount, String name){
+        if (amount <= openTickets.size())
+        {
+            for (int i = 0; i < amount; i++) {
+                Ticket ticket = openTickets.get(0);
+                openTickets.remove(0);
+                ticket.setTicketHolder(name);
+                soldTickets.add(ticket);
+            }
+        }
+        return this;
+    }
+    public int getAvailableTickets(){
+        return openTickets.size();
+    }
+
+    public Movie getMovie() { return movie; }
+
+    public void setMovie(Movie movie) { this.movie = movie; }
 
     public LocalDateTime getStartTime() {
         return startTime;
@@ -60,11 +65,11 @@ public class Show {
         this.endTime = endTime;
     }
 
-    public List<Ticket> getTickets() {
-        return tickets;
+    public List<Ticket> getOpenTickets() {
+        return openTickets;
     }
 
-    public void setTickets(List<Ticket> tickets) {
-        this.tickets = tickets;
+    public void setOpenTickets(List<Ticket> openTickets) {
+        this.openTickets = openTickets;
     }
 }

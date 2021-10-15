@@ -1,20 +1,13 @@
 package nl.inholland.model;
 
-import java.time.LocalDateTime;
-
 public class Ticket {
-private TicketStatus ticketStatus;
-private String ticketHolder;
+    private String ticketHolder;
 
-    public Ticket() {
-        this.ticketStatus = TicketStatus.Available;
+    public String getTicketHolder() {
+        return ticketHolder;
     }
 
-    public TicketStatus getTicketStatus() {
-        return ticketStatus;
-    }
-
-    public void setTicketStatus(TicketStatus ticketStatus) {
-        this.ticketStatus = ticketStatus;
+    public void setTicketHolder(String ticketHolder) {
+        this.ticketHolder = ticketHolder;
     }
 }

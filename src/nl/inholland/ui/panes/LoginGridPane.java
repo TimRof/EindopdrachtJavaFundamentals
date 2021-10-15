@@ -1,24 +1,22 @@
 package nl.inholland.ui.panes;
 
-import javafx.event.EventHandler;
+import nl.inholland.data.Database;
+import nl.inholland.model.User;
+import nl.inholland.ui.windows.MainWindow;
+
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import nl.inholland.data.Database;
-import nl.inholland.model.User;
-import nl.inholland.ui.windows.MainWindow;
 
 public class LoginGridPane extends GridPane {
     public LoginGridPane(Database db, Stage stage) {
-        this.setPadding(new Insets(10,10,10,10));
-        this.setVgap(5);
+        setPadding(new Insets(10,10,10,10));
+        setVgap(5);
 
         // labels, textfields and button
         Label welcomeLabel = new Label("Welcome!\nPlease sign in to continue.");
@@ -45,7 +43,7 @@ public class LoginGridPane extends GridPane {
         // hide badLogin label
         badLogin.setVisible(false);
 
-        this.getChildren().addAll(userLabel, passLabel, userInput, passInput, loginButton, badLogin);
+        getChildren().addAll(userLabel, passLabel, userInput, passInput, loginButton, badLogin);
 
         // login functionality
         loginButton.setOnAction(actionEvent -> {
@@ -73,8 +71,9 @@ public class LoginGridPane extends GridPane {
             {
                 badLogin.setVisible(false);
                 MainWindow mw = new MainWindow(db, user, stage);
+                mw.getStage().setTitle("Fabulous Cinema  -- purchase tickets -- Welcome " + user.getFirstName() + " " + user.getLastName() + "! [" + user.getAccessLevel() + "]");
                 mw.getStage().show();
-                passInput .clear();
+                passInput.clear();
                 passInput.requestFocus();
                 stage.hide();
                 return;

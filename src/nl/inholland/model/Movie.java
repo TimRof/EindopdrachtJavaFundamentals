@@ -36,4 +36,9 @@ public class Movie {
     public void setMovieDuration(Duration movieDuration) {
         this.movieDuration = movieDuration;
     }
+
+    @Override
+    public String toString() {
+        return title;
+    }
 }

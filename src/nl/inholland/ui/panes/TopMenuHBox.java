@@ -1,48 +1,75 @@
 package nl.inholland.ui.panes;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
-import javafx.scene.layout.HBox;
-import javafx.stage.Stage;
 import nl.inholland.model.AccessLevel;
 import nl.inholland.model.User;
-import nl.inholland.ui.dialogs.LogoutDialog;
+import nl.inholland.ui.dialogs.ConfirmDialog;
+import nl.inholland.ui.windows.MainWindow;
+
+import javafx.geometry.Insets;
+import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 
 public class TopMenuHBox extends HBox{
-    public TopMenuHBox(User loggedInUser, Stage oldStage, Stage stage) {
+    public TopMenuHBox(MainWindow mainWindow, User loggedInUser, Stage oldStage, Stage stage) {
+        setPadding(new Insets(5));
 
-        this.setPadding(new Insets(13,13,13,13));
-        this.setSpacing(10);
-        this.setStyle("-fx-background-color: #464854");
+        Menu helpMenu = makeHelpMenu();
+        Menu logoutMenu = makeLogoutMenu(oldStage, stage);
 
-        // user/admin menu items
-        MenuItem manageShowingsMenu = new MenuItem("Manage showings");
-        MenuItem manageMoviesMenu = new MenuItem("Manage movies");
-        MenuItem profileMenuItem = new MenuItem("Profile");
-        MenuButton adminMenuButton = new MenuButton(loggedInUser.getAccessLevel().toString(), null, profileMenuItem);
+        MenuBar menuBar = new MenuBar();
         if (loggedInUser.getAccessLevel().equals(AccessLevel.Admin))
-            adminMenuButton.getItems().addAll(manageShowingsMenu, manageMoviesMenu);
-        adminMenuButton.setPrefSize(100,20);
+            menuBar.getMenus().add(makeAdminMenu(loggedInUser, mainWindow));
 
+        menuBar.getMenus().addAll(helpMenu, logoutMenu);
+
+        getStyleClass().add("topMenu");
+
+        getChildren().add(menuBar);
+    }
+    private Menu makeAdminMenu(User loggedInUser, MainWindow mainWindow){
+        // admin menu
+        Menu adminMenu = new Menu(loggedInUser.getAccessLevel().toString());
+
+        MenuItem manageShowingsItem = new MenuItem("Manage showings");
+        MenuItem manageMoviesItem = new MenuItem("Manage movies");
+
+        manageShowingsItem.setOnAction(e -> mainWindow.setManageShowsView());
+        manageMoviesItem.setOnAction(e -> mainWindow.setManageMoviesView());
+
+        adminMenu.getItems().addAll(manageShowingsItem, manageMoviesItem);
+
+        /*MenuItem purchaseItem = new MenuItem("Purchase tickets");
+        purchaseItem.setOnAction(e -> mainWindow.setPurchaseView()); // no purchase button allowed?
+        adminMenu.getItems().add(purchaseItem);*/
+
+        return adminMenu;
+    }
+    private Menu makeHelpMenu(){
         // about menu item
-        MenuItem aboutMenu = new MenuItem("About");
-        MenuButton helpMenuButton = new MenuButton("Help", null, aboutMenu);
-        helpMenuButton.setPrefSize(100,20);
+        Menu helpMenu = new Menu("Help");
+        MenuItem aboutItem = new MenuItem("About");
+        helpMenu.getItems().add(aboutItem);
 
+        return helpMenu;
+    }
+    private Menu makeLogoutMenu(Stage oldStage, Stage stage){
         // log out menu item
-        Button logoutButton = new Button("Log out");
-        logoutButton.setPrefSize(100,20);
+        Menu logoutMenu = new Menu("Log out");
+        MenuItem logoutItem = new MenuItem("Logout...");
 
-        // log out functionality
-        logoutButton.setOnAction(actionEvent -> {
-            new LogoutDialog(Alert.AlertType.CONFIRMATION, oldStage, stage);
+        logoutMenu.getItems().add(logoutItem);
+
+        logoutItem.setOnAction(e -> {
+            ConfirmDialog confirmDialog = new ConfirmDialog(Alert.AlertType.CONFIRMATION, "Confirm logout", "Logging out");
+            if (confirmDialog.getResult() != ButtonType.YES) {
+                confirmDialog.close();
+            } else {
+                oldStage.show();
+                stage.close();
+            }
         });
 
-        this.getChildren().addAll(adminMenuButton, helpMenuButton,logoutButton);
+        return logoutMenu;
     }
 }
