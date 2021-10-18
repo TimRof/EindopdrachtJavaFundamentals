@@ -96,7 +96,6 @@ public class ManageShowsGridPane extends GridPane {
         Label startLabel = new Label("Start");
         HBox timeHBox = makeDateTimePicker();
 
-
         Label endLabel = new Label("End");
         endTimeLabel = new Label("");
         setEndTime();
@@ -240,8 +239,8 @@ public class ManageShowsGridPane extends GridPane {
         }
     }
     private void clearFields(InfoPane infoPane){
-        movieCombo.setValue(null);
-        roomCombo.setValue(null);
+        movieCombo.getSelectionModel().clearSelection();
+        roomCombo.getSelectionModel().clearSelection();
         startDatePicker.setValue(LocalDate.now());
         seatsAmountLabel.setText("");
         priceAmountLabel.setText("");

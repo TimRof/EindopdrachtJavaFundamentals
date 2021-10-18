@@ -8,6 +8,7 @@ import javafx.scene.control.*;
 import nl.inholland.model.Movie;
 import nl.inholland.ui.dialogs.ConfirmDialog;
 import nl.inholland.ui.exceptions.NoDurationException;
+import nl.inholland.ui.exceptions.NoMovieException;
 import nl.inholland.ui.exceptions.NoNameException;
 import nl.inholland.ui.exceptions.NoPriceException;
 
@@ -20,8 +21,11 @@ public class ManageMoviesGridPane extends GridPane {
     private TextField durationTextField;
     private Button addButton;
     private Button clearButton;
+    private Button removeButton;
+    private ComboBox<Movie> movieCombo;
     public ManageMoviesGridPane(Database db, InfoPane infoPane) {
         createNodes();
+        fillMovieCombo(db);
 
         // allow a maximum of 50 characters in TextField
         titleTextField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -55,6 +59,8 @@ public class ManageMoviesGridPane extends GridPane {
         addButton.setOnAction(actionEvent -> addMovie(db, infoPane));
         // clear fields
         clearButton.setOnAction(actionEvent -> clearFields());
+        // remove button
+        removeButton.setOnAction(actionEvent -> removeMovie(db, infoPane));
     }
     private void createNodes() {
         // Create Labels, TextFields and Buttons
@@ -69,10 +75,14 @@ public class ManageMoviesGridPane extends GridPane {
         durationTextField = new TextField();
         durationTextField.setMaxSize(50,20);
 
-        addButton = new Button("Add showing");
+        addButton = new Button("Add movie");
         clearButton = new Button("Clear");
         addButton.setPrefSize(120, 20);
         clearButton.setPrefSize(120, 20);
+
+        removeButton = new Button("Remove");
+        removeButton.setPrefSize(120, 20);
+        movieCombo = new ComboBox<>();
 
         setPadding(new Insets(10));
         setHgap(50);
@@ -88,6 +98,9 @@ public class ManageMoviesGridPane extends GridPane {
 
         add(addButton, 2, 1, 1, 1);
         add(clearButton, 2, 2, 1, 1);
+
+        add(movieCombo, 3, 1, 1, 1);
+        add(removeButton, 4, 1, 1, 1);
 
         getStyleClass().add("contentPane");
     }
@@ -114,6 +127,7 @@ public class ManageMoviesGridPane extends GridPane {
             if (confirmDialog.getResult() == ButtonType.YES)
             {
                 db.addMovie(movie);
+                fillMovieCombo(db);
                 infoPane.showInfoMessage("Successfully added the movie '" + movieTitle + "'!");
             }
             else
@@ -126,5 +140,30 @@ public class ManageMoviesGridPane extends GridPane {
         titleTextField.setText("");
         priceTextField.setText("");
         durationTextField.setText("");
+        movieCombo.getSelectionModel().clearSelection();
+    }
+    private void removeMovie(Database db, InfoPane infoPane){
+        try {
+            if (movieCombo.getSelectionModel().isEmpty())
+                throw new NoMovieException();
+            String dialogTitle = "Removing movie '" + movieCombo.getValue().getTitle() + "'";
+            String dialogHeader = "You are about to remove '" + movieCombo.getValue().getTitle() + "'" + " from the list of movies. \nThis action can not be undone.";
+            ConfirmDialog confirmDialog = new ConfirmDialog(Alert.AlertType.CONFIRMATION, dialogTitle, dialogHeader);
+            if (confirmDialog.getResult() == ButtonType.YES) {
+                db.removeMovie(movieCombo.getValue());
+                infoPane.showInfoMessage("Successfully removed the movie '" + movieCombo.getValue().getTitle() + "'!");
+                fillMovieCombo(db);
+            } else
+                infoPane.showInfoMessage("No movie removed.");
+        }
+        catch(Exception e){
+            infoPane.showInfoMessage("Movie not removed. (" + e.getMessage() + ")");
+        }
+    }
+    private void fillMovieCombo(Database db){
+        movieCombo.getItems().clear();
+        for (Movie m:db.getMovies()){
+            movieCombo.getItems().add(m);
+        }
     }
 }

@@ -24,6 +24,10 @@ public class Database {
         return movies;
     }
 
+    public void removeMovie(Movie movie){
+        movies.remove(movie);
+    }
+
     public Show buyTickets(Show show, int amount, String name) {
         Show newShow = show.buyTickets(amount, name);
         for (Room r:rooms){
