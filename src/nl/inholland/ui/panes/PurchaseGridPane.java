@@ -34,11 +34,7 @@ public class PurchaseGridPane extends GridPane{
             TableRow<Show> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if(!row.isEmpty()) {
-                    mainWindow.setPurchaseView();
-                    selectedShow = row.getItem();
-                    fillLabels();
-                    seatsComboBox.getItems().clear();
-                    setSeatsComboBox(seatsComboBox);
+                    showSelected(mainWindow, row);
                 }
             });
             return row;
@@ -49,10 +45,7 @@ public class PurchaseGridPane extends GridPane{
             TableRow<Show> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if(!row.isEmpty()) {
-                    mainWindow.setPurchaseView();
-                    selectedShow = row.getItem();
-                    fillLabels();
-                    setSeatsComboBox(seatsComboBox);
+                    showSelected(mainWindow, row);
                 }
             });
             return row;
@@ -61,46 +54,19 @@ public class PurchaseGridPane extends GridPane{
         // purchase button click
         purchaseButton.setOnAction(actionEvent -> {
             if (selectedShow!=null) {
-                try {
-                    int amount = Integer.parseInt(seatsComboBox.getValue().toString());
-                    if (amount < 1) // if seats = 0 throw exception
-                        throw new NoSeatsException();
-                    else if (nameTextField.getText().isEmpty()) // if name is empty throw exception
-                        throw new NoNameException();
-
-                    String ticket; // check amount for plural
-                    if (amount > 1)
-                        ticket = "tickets";
-                    else
-                        ticket = "ticket";
-
-                    String title = "Buying tickets for '" + nameTextField.getText() + "'";
-                    DecimalFormat df = new DecimalFormat("#.00");
-                    String header = "You are about to buy " + amount + " " + ticket + ", for a total of €" + df.format(amount*selectedShow.getMovie().getPrice());
-
-                    ConfirmDialog confirmDialog = new ConfirmDialog(Alert.AlertType.CONFIRMATION, title, header);
-                    if (confirmDialog.getResult() == ButtonType.YES)
-                    {
-                        selectedShow = db.buyTickets(selectedShow, amount, nameTextField.getText());
-                        roomListGridPane.refreshLists();
-                        infoPane.showInfoMessage("Successfully bought " + amount + " " + ticket + "!");
-                        hidePane();
-                    }
-                    else
-                        infoPane.showInfoMessage("No tickets bought.");
-
-                }
-                catch (NoSeatsException | NoNameException e){
-                    infoPane.showInfoMessage("No tickets bought. (" + e.getMessage() + ")");
-                }
+                purchaseTickets(db, roomListGridPane, infoPane);
             }
         });
 
         // clear button click
-        clearButton.setOnAction(actionEvent -> {
-            hidePane();
-            roomListGridPane.refreshLists();
-            infoPane.showInfoMessage("Cleared!");
+        clearButton.setOnAction(actionEvent -> clearFields(roomListGridPane, infoPane));
+
+        // name max characters 25
+        nameTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (nameTextField.getText().length() > 25){
+                String s = nameTextField.getText().substring(0, 25);
+                nameTextField.setText(s);
+            }
         });
     }
 
@@ -122,7 +88,7 @@ public class PurchaseGridPane extends GridPane{
         seatsComboBox.getSelectionModel().selectFirst();
     }
     private void createNodes() {
-        // creates Labels, ComboBox, TextField and Buttons
+        // Create Labels, ComboBox, TextField and Buttons
 
         Label roomLabel = new Label("Room");
         roomLabel.setPadding(new Insets(5, 0,0,0));
@@ -138,7 +104,7 @@ public class PurchaseGridPane extends GridPane{
         movieTitleLabel = new Label("");
 
         Label seatsLabel = new Label("No. of seats");
-        seatsComboBox = new ComboBox<Integer>();
+        seatsComboBox = new ComboBox<>();
         seatsComboBox.getSelectionModel().selectFirst();
 
         Label nameLabel = new Label("Name");
@@ -176,16 +142,62 @@ public class PurchaseGridPane extends GridPane{
         hidePane();
     }
     private void hidePane(){
+        // hides purchasePane
         seatsComboBox.getSelectionModel().selectFirst();
         nameTextField.clear();
         selectedShow = null;
         setVisible(false);
     }
     private void fillLabels(){
+        // shows and fills purchasePane
         setVisible(true);
         roomNumberLabel.setText("Room " + selectedShow.getRoomNumber());
         startTimeLabel.setText(selectedShow.getStartTime().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
         endTimeLabel.setText(selectedShow.getEndTime().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
         movieTitleLabel.setText(selectedShow.getMovie().getTitle());
+    }
+    private void purchaseTickets(Database db, RoomListGridPane roomListGridPane, InfoPane infoPane){
+        try {
+            int amount = Integer.parseInt(seatsComboBox.getValue().toString());
+            if (amount < 1) // if seats = 0 throw exception
+                throw new NoSeatsException();
+            else if (nameTextField.getText().isEmpty()) // if name is empty throw exception
+                throw new NoNameException();
+
+            String ticket; // check amount for plural
+            if (amount > 1)
+                ticket = "tickets";
+            else
+                ticket = "ticket";
+
+            String dialogTitle = "Buying tickets for '" + nameTextField.getText() + "'";
+            DecimalFormat df = new DecimalFormat("#.00");
+            String dialogHeader = "You are about to buy " + amount + " " + ticket + ", for a total of €" + df.format(amount*selectedShow.getMovie().getPrice());
+
+            ConfirmDialog confirmDialog = new ConfirmDialog(Alert.AlertType.CONFIRMATION, dialogTitle, dialogHeader);
+            if (confirmDialog.getResult() == ButtonType.YES)
+            {
+                selectedShow = db.buyTickets(selectedShow, amount, nameTextField.getText());
+                roomListGridPane.refreshLists();
+                infoPane.showInfoMessage("Successfully bought " + amount + " " + ticket + "!");
+                hidePane();
+            }
+            else
+                infoPane.showInfoMessage("No tickets bought.");
+        } catch (Exception e){
+            infoPane.showInfoMessage("No tickets bought. (" + e.getMessage() + ")");
+        }
+    }
+    private void clearFields(RoomListGridPane roomListGridPane, InfoPane infoPane){
+        hidePane();
+        roomListGridPane.refreshLists();
+        infoPane.showInfoMessage("Cleared!");
+    }
+    private void showSelected(MainWindow mainWindow, TableRow<Show> row){
+        mainWindow.setPurchaseView();
+        selectedShow = row.getItem();
+        fillLabels();
+        seatsComboBox.getItems().clear();
+        setSeatsComboBox(seatsComboBox);
     }
 }

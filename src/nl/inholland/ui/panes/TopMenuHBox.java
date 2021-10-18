@@ -39,10 +39,6 @@ public class TopMenuHBox extends HBox{
 
         adminMenu.getItems().addAll(manageShowingsItem, manageMoviesItem);
 
-        /*MenuItem purchaseItem = new MenuItem("Purchase tickets");
-        purchaseItem.setOnAction(e -> mainWindow.setPurchaseView()); // no purchase button allowed?
-        adminMenu.getItems().add(purchaseItem);*/
-
         return adminMenu;
     }
     private Menu makeHelpMenu(){

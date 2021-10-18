@@ -18,7 +18,7 @@ public class LoginGridPane extends GridPane {
         setPadding(new Insets(10,10,10,10));
         setVgap(5);
 
-        // labels, textfields and button
+        // labels, textFields and button
         Label welcomeLabel = new Label("Welcome!\nPlease sign in to continue.");
         Label badLogin = new Label("Bad credentials!");
 
@@ -31,7 +31,7 @@ public class LoginGridPane extends GridPane {
         getStyleClass().add("background");
         badLogin.setStyle("-fx-text-fill: red");
 
-        // place nodes on gridpane
+        // place nodes on gridPane
         GridPane.setConstraints(welcomeLabel, 0, 0);
         GridPane.setConstraints(badLogin, 0, 5);
         GridPane.setConstraints(userLabel, 0, 2);
@@ -46,9 +46,7 @@ public class LoginGridPane extends GridPane {
         getChildren().addAll(userLabel, passLabel, userInput, passInput, loginButton, badLogin);
 
         // login functionality
-        loginButton.setOnAction(actionEvent -> {
-            checkLogin(db, userInput, passInput, badLogin, stage);
-        });
+        loginButton.setOnAction(actionEvent -> checkLogin(db, userInput, passInput, badLogin, stage));
 
         userInput.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode().equals(KeyCode.ENTER))

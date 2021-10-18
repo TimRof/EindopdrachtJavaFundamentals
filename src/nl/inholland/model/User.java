@@ -1,11 +1,11 @@
 package nl.inholland.model;
 
 public class User {
-    private String firstName;
-    private String lastName;
-    private String username;
-    private String password;
-    private AccessLevel accessLevel;
+    private final String firstName;
+    private final String lastName;
+    private final String username;
+    private final String password;
+    private final AccessLevel accessLevel;
 
     public User(String firstName, String lastName, String username, String password, AccessLevel accessLevel) {
         this.firstName = firstName;
@@ -19,39 +19,19 @@ public class User {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
     public String getLastName() {
         return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public AccessLevel getAccessLevel() {
         return accessLevel;
-    }
-
-    public void setAccessLevel(AccessLevel accessLevel) {
-        this.accessLevel = accessLevel;
     }
 }

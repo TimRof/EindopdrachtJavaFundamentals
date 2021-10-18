@@ -1,6 +1,5 @@
 package nl.inholland;
 
-
 import javafx.application.Application;
 import javafx.stage.Stage;
 import nl.inholland.data.Database;
@@ -10,7 +9,7 @@ public class App extends Application {
 
     public static void main(String[] args) { launch(args); }
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         // rendering the text more crisply
         System.setProperty("prism.lcdtext", "false");
         // create database

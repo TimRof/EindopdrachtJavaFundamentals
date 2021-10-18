@@ -58,11 +58,11 @@ public class RoomListGridPane extends GridPane {
 
         setStyle("-fx-border-color: #00325a");
 
-        setMargin(roomOneVBox, new Insets(0,0,0,5));
-        setMargin(roomTwoVBox, new Insets(0,5,5,5));
+        setMargin(roomOneVBox, new Insets(0,0,0,10));
+        setMargin(roomTwoVBox, new Insets(0,10,10,10));
 
-        setMargin(roomOneLabel, new Insets(5,0,0,5));
-        setMargin(roomTwoLabel, new Insets(5,0,0,5));
+        setMargin(roomOneLabel, new Insets(10,0,0,10));
+        setMargin(roomTwoLabel, new Insets(10,0,0,10));
     }
 
     private void makeColumns(TableView<Show> tableView){

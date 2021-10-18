@@ -4,14 +4,17 @@ import nl.inholland.data.Database;
 import nl.inholland.model.Movie;
 import nl.inholland.model.Room;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.util.StringConverter;
 import javafx.util.converter.DateTimeStringConverter;
+import nl.inholland.model.Show;
+import nl.inholland.ui.dialogs.ConfirmDialog;
+import nl.inholland.ui.exceptions.NoMovieException;
+import nl.inholland.ui.exceptions.NoRoomException;
+import nl.inholland.ui.exceptions.TimeOverlapException;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -22,8 +25,8 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class ManageShowsGridPane extends GridPane {
-    private Database db;
-    private ComboBox<Movie> titleCombo;
+    private final Database db;
+    private ComboBox<Movie> movieCombo;
     private ComboBox<Room> roomCombo;
     private Label seatsAmountLabel;
     private DatePicker startDatePicker;
@@ -32,16 +35,16 @@ public class ManageShowsGridPane extends GridPane {
     private Label priceAmountLabel;
     Button addButton;
     Button clearButton;
-    public ManageShowsGridPane(Database db, InfoPane infoPane) {
+    public ManageShowsGridPane(Database db, InfoPane infoPane, RoomListGridPane roomListGridPane) {
         this.db = db;
         createNodes();
         fillCombos();
 
         // set price & end time
-        titleCombo.setOnAction(actionEvent -> {
-            if (!titleCombo.getSelectionModel().isEmpty()) {
+        movieCombo.setOnAction(actionEvent -> {
+            if (!movieCombo.getSelectionModel().isEmpty()) {
                 DecimalFormat df = new DecimalFormat("#.00");
-                priceAmountLabel.setText(df.format(titleCombo.getValue().getPrice()));
+                priceAmountLabel.setText(df.format(movieCombo.getValue().getPrice()));
                 setEndTime();
             }
         });
@@ -64,36 +67,25 @@ public class ManageShowsGridPane extends GridPane {
         });
 
         // add show
-        addButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                // add show
-            }
-        });
+        addButton.setOnAction(actionEvent -> addShow(roomListGridPane, infoPane));
 
         // clear fields
-        clearButton.setOnAction(actionEvent -> clearFields());
+        clearButton.setOnAction(actionEvent -> clearFields(infoPane));
+    }
+    private LocalDateTime getStartTime(){
+        return LocalDateTime.of(startDatePicker.getValue(), LocalTime.parse(timeText.getText()));
     }
     private void setEndTime(){
-        LocalDateTime startTime = LocalDateTime.of(startDatePicker.getValue(), LocalTime.parse(timeText.getText()));
-        if (!titleCombo.getSelectionModel().isEmpty())
-            startTime = startTime.plus(titleCombo.getValue().getMovieDuration());
-        endTimeLabel.setText(startTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
-    }
-    private void clearFields(){
-        titleCombo.setValue(null);
-        roomCombo.setValue(null);
-        startDatePicker.setValue(LocalDate.now());
-        seatsAmountLabel.setText("");
-        priceAmountLabel.setText("");
-        timeText.setText("00:00");
-        setEndTime();
+        LocalDateTime localDateTime = getStartTime();
+        if (!movieCombo.getSelectionModel().isEmpty()) // if movie is selected
+            localDateTime = localDateTime.plus(movieCombo.getValue().getMovieDuration()); // startTime + Duration
+        endTimeLabel.setText(localDateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
     }
     private void createNodes() {
-        // creates Labels, ComboBoxes, DatePicker, TextField and Buttons
+        // Create Labels, ComboBoxes, DatePicker, TextField and Buttons
 
         Label titleLabel = new Label("Movie title");
-        titleCombo = new ComboBox<>();
+        movieCombo = new ComboBox<>();
 
         Label roomLabel = new Label("Room");
         roomCombo = new ComboBox<>();
@@ -125,7 +117,7 @@ public class ManageShowsGridPane extends GridPane {
         add(roomLabel, 0, 1, 1, 1);
         add(seatsLabel, 0, 2, 1, 1);
 
-        add(titleCombo, 1, 0, 1, 1);
+        add(movieCombo, 1, 0, 1, 1);
         add(roomCombo, 1, 1, 1, 1);
         add(seatsAmountLabel, 1, 2, 1, 1);
 
@@ -160,7 +152,7 @@ public class ManageShowsGridPane extends GridPane {
         startDatePicker = new DatePicker();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
-        StringConverter<LocalDate> dateConverter = new StringConverter<LocalDate>() {
+        StringConverter<LocalDate> dateConverter = new StringConverter<>() {
             @Override
             public String toString(LocalDate date) {
                 if (date != null) {
@@ -197,12 +189,69 @@ public class ManageShowsGridPane extends GridPane {
     }
     private void fillMovieCombo(){
         for (Movie m:db.getMovies()){
-            titleCombo.getItems().add(m);
+            movieCombo.getItems().add(m);
         }
     }
     private void fillRoomCombo(){
         for (Room r:db.getRooms()){
             roomCombo.getItems().add(r);
         }
+    }
+    private boolean checkTimeOverlap(Show show){
+        for (Show s:db.getRoomShows(show.getRoomNumber()).getShows()){
+            if(show.getStartTime().isBefore(s.getEndTime().plusMinutes(15)) && s.getStartTime().isBefore(show.getEndTime().plusMinutes(15)))
+                return true;
+        }
+        return false;
+    }
+    private void addShow(RoomListGridPane roomListGridPane, InfoPane infoPane){
+        try {
+            if (movieCombo.getSelectionModel().isEmpty())
+                throw new NoMovieException();
+            else if (roomCombo.getSelectionModel().isEmpty())
+                throw new NoRoomException();
+            Room room = roomCombo.getValue();
+            Show show = new Show(movieCombo.getValue(), getStartTime(), room.getRoomNumber());
+
+            if (checkTimeOverlap(show))
+            {
+                throw new TimeOverlapException();
+            }
+            else{
+                String dialogTitle = "Adding show '" + show.getMovie() + "' in 'Room " + "1'";
+                String dialogHeader = "Title:\t\t" + show.getMovie() + "\nRoom:\tRoom " + room.getRoomNumber() + "\nStart:\t" +
+                        show.getStartTime().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")) +
+                        "\nEnd:\t\t" + show.getEndTime().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")) ;
+
+                ConfirmDialog confirmDialog = new ConfirmDialog(Alert.AlertType.CONFIRMATION, dialogTitle, dialogHeader);
+                if (confirmDialog.getResult() == ButtonType.YES)
+                {
+                    room.addShow(show);
+                    roomListGridPane.refreshLists();
+                    infoPane.showInfoMessage("Successfully added the show '" + show.getMovie() + "' in Room " + "1!");
+                }
+                else
+                    infoPane.showInfoMessage("No show added.");
+
+            }
+        }
+        catch (Exception e) {
+            infoPane.showInfoMessage("Show not added. (" + e.getMessage() + ")");
+        }
+    }
+    private void clearFields(InfoPane infoPane){
+        movieCombo.setValue(null);
+        roomCombo.setValue(null);
+        startDatePicker.setValue(LocalDate.now());
+        seatsAmountLabel.setText("");
+        priceAmountLabel.setText("");
+        timeText.setText("00:00");
+        setEndTime();
+        infoPane.showInfoMessage("Cleared!");
+    }
+    public void refresh(){
+        movieCombo.getItems().clear();
+        roomCombo.getItems().clear();
+        fillCombos();
     }
 }

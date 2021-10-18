@@ -37,14 +37,14 @@ public class MainWindow {
         // make listviews for rooms
         RoomListGridPane roomListGridPane = new RoomListGridPane(db);
 
-        // make infopane
+        // make infoPane
         InfoPane infoPane = new InfoPane("Welcome " + user.getFirstName() + " " + user.getLastName() + "!");
 
         // make purchase pane
         purchaseGridPane = new PurchaseGridPane(db, roomListGridPane, infoPane, this);
 
         // make manage shows pane
-        manageShowsGridPane = new ManageShowsGridPane(db, infoPane);
+        manageShowsGridPane = new ManageShowsGridPane(db, infoPane, roomListGridPane);
 
         // make manage movies pane
         manageMoviesGridPane = new ManageMoviesGridPane(db, infoPane);
@@ -55,6 +55,7 @@ public class MainWindow {
         VBox.setMargin(headerLabel, new Insets(10,10,0,10));
         VBox.setMargin(purchaseGridPane, new Insets(0,10,10,10));
         VBox.setMargin(manageShowsGridPane, new Insets(0,10,10,10));
+        VBox.setMargin(manageMoviesGridPane, new Insets(0,10,10,10));
         VBox.setMargin(infoPane, new Insets(0,10,10,10));
 
         StyledScene dashboardScene = new StyledScene(mainVBox);
@@ -69,6 +70,7 @@ public class MainWindow {
     public void setManageShowsView(){
         stage.setTitle(titleString + " -- manage showings -- " + welcomeString);
         headerLabel.setText("Manage showings");
+        manageShowsGridPane.refresh();
         setView(manageShowsGridPane);
     }
     public void setManageMoviesView(){

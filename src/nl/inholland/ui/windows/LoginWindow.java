@@ -7,7 +7,7 @@ import nl.inholland.ui.panes.LoginGridPane;
 import javafx.stage.Stage;
 
 public class LoginWindow {
-    private Stage stage;
+    private final Stage stage;
     public Stage getStage(){ return stage; }
 
     public LoginWindow(Database db){

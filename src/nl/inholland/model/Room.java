@@ -4,12 +4,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Room {
     private int roomNumber;
     private int seatsAmount;
-    private List<Show> shows;
+    private final List<Show> shows;
 
     public Room(int roomNumber, int seatsAmount) {
         this.roomNumber = roomNumber;
@@ -20,6 +21,7 @@ public class Room {
     public ObservableList<Show> getShows() {
         ObservableList<Show> roomShows = FXCollections.observableArrayList();
         roomShows.addAll(shows);
+        roomShows.sort(Comparator.comparing(Show::getStartTime));
         return roomShows;
     }
 
