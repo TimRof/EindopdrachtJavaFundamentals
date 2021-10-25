@@ -35,10 +35,10 @@ public class ManageMoviesGridPane extends GridPane {
             }
         });
 
-        // only allow numbers, comma's and dots, allow a maximum of 5 characters
+        // only allow numbers and dots, allow a maximum of 5 characters
         priceTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) {
-                priceTextField.setText(newValue.replaceAll("[^\\d.,]", ""));
+                priceTextField.setText(newValue.replaceAll("[^\\d.]", ""));
             }
             if (priceTextField.getText().length() > 5){
                 String s = priceTextField.getText().substring(0, 5);

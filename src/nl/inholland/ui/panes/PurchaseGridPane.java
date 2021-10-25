@@ -26,11 +26,11 @@ public class PurchaseGridPane extends GridPane{
     private TextField nameTextField;
     private final int maxSeats = 8; // max seats combobox
 
-    public PurchaseGridPane(Database db, RoomListGridPane roomListGridPane, InfoPane infoPane, MainWindow mainWindow) {
+    public PurchaseGridPane(Database db, RoomListVBox roomListVBox, InfoPane infoPane, MainWindow mainWindow) {
         createNodes();
 
         // row selection tableViewOne
-        roomListGridPane.getRoomOneTableView().setRowFactory(tv -> {
+        roomListVBox.getRoomOneTableView().setRowFactory(tv -> {
             TableRow<Show> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if(!row.isEmpty()) {
@@ -41,7 +41,7 @@ public class PurchaseGridPane extends GridPane{
         });
 
         // row selection tableViewTwo
-        roomListGridPane.getRoomTwoTableView().setRowFactory(tv -> {
+        roomListVBox.getRoomTwoTableView().setRowFactory(tv -> {
             TableRow<Show> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if(!row.isEmpty()) {
@@ -54,12 +54,12 @@ public class PurchaseGridPane extends GridPane{
         // purchase button click
         purchaseButton.setOnAction(actionEvent -> {
             if (selectedShow!=null) {
-                purchaseTickets(db, roomListGridPane, infoPane);
+                purchaseTickets(db, roomListVBox, infoPane);
             }
         });
 
         // clear button click
-        clearButton.setOnAction(actionEvent -> clearFields(roomListGridPane, infoPane));
+        clearButton.setOnAction(actionEvent -> clearFields(roomListVBox, infoPane));
 
         // name max characters 25
         nameTextField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -156,7 +156,7 @@ public class PurchaseGridPane extends GridPane{
         endTimeLabel.setText(selectedShow.getEndTime().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
         movieTitleLabel.setText(selectedShow.getMovie().getTitle());
     }
-    private void purchaseTickets(Database db, RoomListGridPane roomListGridPane, InfoPane infoPane){
+    private void purchaseTickets(Database db, RoomListVBox roomListVBox, InfoPane infoPane){
         try {
             int amount = Integer.parseInt(seatsComboBox.getValue().toString());
             if (amount < 1) // if seats = 0 throw exception
@@ -178,7 +178,7 @@ public class PurchaseGridPane extends GridPane{
             if (confirmDialog.getResult() == ButtonType.YES)
             {
                 selectedShow = db.buyTickets(selectedShow, amount, nameTextField.getText());
-                roomListGridPane.refreshLists();
+                roomListVBox.refreshLists();
                 infoPane.showInfoMessage("Successfully bought " + amount + " " + ticket + "!");
                 hidePane();
             }
@@ -188,9 +188,9 @@ public class PurchaseGridPane extends GridPane{
             infoPane.showInfoMessage("No tickets bought. (" + e.getMessage() + ")");
         }
     }
-    private void clearFields(RoomListGridPane roomListGridPane, InfoPane infoPane){
+    private void clearFields(RoomListVBox roomListVBox, InfoPane infoPane){
         hidePane();
-        roomListGridPane.refreshLists();
+        roomListVBox.refreshLists();
         infoPane.showInfoMessage("Cleared!");
     }
     private void showSelected(MainWindow mainWindow, TableRow<Show> row){

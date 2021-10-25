@@ -31,13 +31,15 @@ public class TopMenuHBox extends HBox{
         // admin menu
         Menu adminMenu = new Menu(loggedInUser.getAccessLevel().toString());
 
-        MenuItem manageShowingsItem = new MenuItem("Manage showings");
-        MenuItem manageMoviesItem = new MenuItem("Manage movies");
+        MenuItem manageShowingsItem = new MenuItem("Manage showings...");
+        MenuItem manageMoviesItem = new MenuItem("Manage movies...");
+        MenuItem exportShowingsItem = new MenuItem("Export showings...");
 
         manageShowingsItem.setOnAction(e -> mainWindow.setManageShowsView());
         manageMoviesItem.setOnAction(e -> mainWindow.setManageMoviesView());
+        exportShowingsItem.setOnAction(e -> mainWindow.exportShowings());
 
-        adminMenu.getItems().addAll(manageShowingsItem, manageMoviesItem);
+        adminMenu.getItems().addAll(manageShowingsItem, manageMoviesItem, exportShowingsItem);
 
         return adminMenu;
     }

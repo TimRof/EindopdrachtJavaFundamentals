@@ -35,7 +35,7 @@ public class ManageShowsGridPane extends GridPane {
     private Label priceAmountLabel;
     Button addButton;
     Button clearButton;
-    public ManageShowsGridPane(Database db, InfoPane infoPane, RoomListGridPane roomListGridPane) {
+    public ManageShowsGridPane(Database db, InfoPane infoPane, RoomListVBox roomListVBox) {
         this.db = db;
         createNodes();
         fillCombos();
@@ -67,7 +67,7 @@ public class ManageShowsGridPane extends GridPane {
         });
 
         // add show
-        addButton.setOnAction(actionEvent -> addShow(roomListGridPane, infoPane));
+        addButton.setOnAction(actionEvent -> addShow(roomListVBox, infoPane));
 
         // clear fields
         clearButton.setOnAction(actionEvent -> clearFields(infoPane));
@@ -203,7 +203,7 @@ public class ManageShowsGridPane extends GridPane {
         }
         return false;
     }
-    private void addShow(RoomListGridPane roomListGridPane, InfoPane infoPane){
+    private void addShow(RoomListVBox roomListVBox, InfoPane infoPane){
         try {
             if (movieCombo.getSelectionModel().isEmpty())
                 throw new NoMovieException();
@@ -226,7 +226,7 @@ public class ManageShowsGridPane extends GridPane {
                 if (confirmDialog.getResult() == ButtonType.YES)
                 {
                     room.addShow(show);
-                    roomListGridPane.refreshLists();
+                    roomListVBox.refreshLists();
                     infoPane.showInfoMessage("Successfully added the show '" + show.getMovie() + "' in Room " + "1!");
                 }
                 else

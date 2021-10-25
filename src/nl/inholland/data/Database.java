@@ -27,6 +27,13 @@ public class Database {
     public void removeMovie(Movie movie){
         movies.remove(movie);
     }
+    public List<Show> getShows(){
+        List<Show> shows = new ArrayList<>();
+            for (Room room: rooms) {
+                shows.addAll(room.getShows());
+            }
+            return shows;
+    }
 
     public Show buyTickets(Show show, int amount, String name) {
         Show newShow = show.buyTickets(amount, name);

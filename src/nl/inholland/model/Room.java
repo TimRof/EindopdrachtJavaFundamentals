@@ -24,6 +24,18 @@ public class Room {
         roomShows.sort(Comparator.comparing(Show::getStartTime));
         return roomShows;
     }
+    public ObservableList<Show> getFilteredShows(String filter) {
+        ObservableList<Show> roomShows = FXCollections.observableArrayList();
+        for (Show s:shows)
+        {
+            if (!s.getMovie().getTitle().contains(filter))
+                continue;
+            roomShows.add(s);
+        }
+
+        roomShows.sort(Comparator.comparing(Show::getStartTime));
+        return roomShows;
+    }
 
     public void addShow(Show show) {
         show.makeTickets(seatsAmount);
