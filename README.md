@@ -2,11 +2,10 @@
 ## Tim Roffelsen #672395
 [github](https://github.com/TimRof)
 
-Welcome to my end assignment, three movies are automatically added 
+Welcome to my end assignment for Java Fundamentals, three movies are automatically added 
 for you when you run the application. 
 
-Please use these username/passwords combinations to login. 
-(_use your own name for a personalised welcome message_)
+Please use these username/passwords combinations to login.
 
 __Admin passwords:__
 
